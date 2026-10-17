@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FocusGuard | Create account</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="page">
+    <section class="card">
+      <div class="logo" aria-hidden="true">&#9673;</div>
+      <p class="brand">FOCUSGUARD</p>
+      <h1>Create your account</h1>
+      <p class="subtitle">Start building better focus habits</p>
+
+      <form id="register-form" action="#" method="post">
+        <div class="form-group">
+          <div class="field-row">
+            <label class="field-label" for="full-name">Full name</label>
+          </div>
+          <input type="text" id="full-name" name="fullName" placeholder="Your full name" maxlength="100" autocomplete="name" required>
+        </div>
+
+        <div class="form-group">
+          <div class="field-row">
+            <label class="field-label" for="email">Email address</label>
+          </div>
+          <input type="email" id="email" name="email" placeholder="you@example.com" maxlength="150" autocomplete="email" required>
+          <p class="hint" id="email-hint">&nbsp;</p>
+        </div>
+
+        <div class="form-group">
+          <div class="field-row">
+            <label class="field-label" for="password">Password</label>
+            <button type="button" id="toggle-password" class="toggle" data-target="password">Show</button>
+          </div>
+          <input type="password" id="password" name="password" placeholder="At least 8 characters" minlength="8" autocomplete="new-password" required>
+          <p class="hint" id="strength-hint">&nbsp;</p>
+          <div class="strength-bar" id="strength-bar" data-score="0" aria-hidden="true">
+            <span class="segment"></span>
+            <span class="segment"></span>
+            <span class="segment"></span>
+            <span class="segment"></span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="field-row">
+            <label class="field-label" for="confirm-password">Confirm password</label>
+            <button type="button" id="toggle-confirm" class="toggle" data-target="confirm-password">Show</button>
+          </div>
+          <input type="password" id="confirm-password" name="confirmPassword" placeholder="Repeat your password" minlength="8" autocomplete="new-password" required>
+          <p class="hint" id="match-hint">&nbsp;</p>
+        </div>
+
+        <p class="error-message" id="register-error">&nbsp;</p>
+
+        <button type="submit" class="btn btn-primary">Create account</button>
+        <a href="index.html" class="btn btn-secondary">Back to sign in</a>
+      </form>
+    </section>
+  </main>
+
+  <script src="js/auth.js"></script>
+</body>
+</html>

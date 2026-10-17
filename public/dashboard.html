@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FocusGuard | Dashboard</title>
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+  <nav class="topbar">
+    <span class="topbar-brand"><span class="brand-mark">&#9673;</span> FocusGuard</span>
+    <div class="topbar-tabs">
+      <button class="tab active" data-section="overview">Dashboard</button>
+      <button class="tab" data-section="timer">Focus Timer</button>
+      <button class="tab" data-section="tasks">Tasks</button>
+      <button class="tab" data-section="history">History</button>
+      <button class="tab" data-section="analytics">Analytics</button>
+      <button class="tab" data-section="journal">Journal</button>
+      <button class="tab" data-section="profile">Profile</button>
+    </div>
+    <div class="topbar-user">
+      <span id="nav-name"></span>
+      <button id="logout-btn" class="btn-ghost">Log out</button>
+    </div>
+  </nav>
+
+  <main>
+    <section id="section-overview" class="panel active">
+      <h1>Good to see you, <span id="overview-name"></span></h1>
+      <div class="stat-grid">
+        <div class="stat-card"><p class="stat-label">Focus time today</p><p class="stat-value" id="stat-focus">00:00:00</p></div>
+        <div class="stat-card"><p class="stat-label">Sessions today</p><p class="stat-value" id="stat-sessions">0</p></div>
+        <div class="stat-card"><p class="stat-label">Tasks completed</p><p class="stat-value" id="stat-tasks">0</p></div>
+        <div class="stat-card"><p class="stat-label">Day streak</p><p class="stat-value" id="stat-streak">0</p></div>
+      </div>
+      <div class="next-task-card">
+        <p class="stat-label">Up next</p>
+        <p id="next-task-title" class="next-task-title">No pending tasks — add one in the Tasks tab.</p>
+        <p id="next-task-meta" class="hint"></p>
+      </div>
+    </section>
+
+    <section id="section-timer" class="panel">
+      <h1>Focus Timer</h1>
+      <div class="timer-wrap">
+        <svg class="timer-ring" viewBox="0 0 200 200" aria-hidden="true">
+          <circle class="ring-bg" cx="100" cy="100" r="88"></circle>
+          <circle class="ring-fill" id="ring-fill" cx="100" cy="100" r="88"></circle>
+        </svg>
+        <div class="timer-readout" id="timer-readout">25:00</div>
+      </div>
+      <div class="timer-inputs">
+        <label>H <input type="number" id="hours" min="0" max="23" value="0"></label>
+        <label>M <input type="number" id="minutes" min="0" max="59" value="25"></label>
+        <label>S <input type="number" id="seconds" min="0" max="59" value="0"></label>
+      </div>
+      <div class="timer-actions">
+        <button id="timer-start" class="btn btn-primary">Start</button>
+        <button id="timer-pause" class="btn btn-secondary" disabled>Pause</button>
+        <button id="timer-stop" class="btn btn-secondary" disabled>Stop &amp; Reset</button>
+      </div>
+    </section>
+
+    <section id="section-tasks" class="panel">
+      <h1>Tasks</h1>
+      <form id="task-form" class="row-form">
+        <input type="text" id="task-title" placeholder="What needs doing?" maxlength="255" required>
+        <select id="task-priority">
+          <option value="High">High</option>
+          <option value="Medium" selected>Medium</option>
+          <option value="Low">Low</option>
+        </select>
+        <input type="date" id="task-due">
+        <button type="submit" class="btn btn-primary" id="task-submit">Add task</button>
+      </form>
+      <div class="task-toolbar">
+        <div class="chip-row" id="task-filters">
+          <button class="chip active" data-filter="all">All</button>
+          <button class="chip" data-filter="pending">Pending</button>
+          <button class="chip" data-filter="completed">Completed</button>
+          <button class="chip" data-filter="overdue">Overdue</button>
+        </div>
+        <select id="task-sort">
+          <option value="smart">Smart sort</option>
+          <option value="deadline">Earliest deadline</option>
+          <option value="priority">Highest priority</option>
+          <option value="newest">Newest</option>
+        </select>
+      </div>
+      <ul id="task-list" class="task-list"></ul>
+      <p class="empty-note" id="tasks-empty">No tasks here yet.</p>
+    </section>
+
+    <section id="section-history" class="panel">
+      <h1 id="history-title">Today's sessions</h1>
+      <div class="chip-row" id="history-ranges">
+        <button class="chip active" data-range="today">Today</button>
+        <button class="chip" data-range="week">Last 7 days</button>
+        <button class="chip" data-range="all">All time</button>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card"><p class="stat-label">Total focus</p><p class="stat-value" id="hist-total">00:00:00</p></div>
+        <div class="stat-card"><p class="stat-label">Sessions</p><p class="stat-value" id="hist-count">0</p></div>
+        <div class="stat-card"><p class="stat-label">Completed</p><p class="stat-value" id="hist-completed">0</p></div>
+      </div>
+      <ul id="history-list" class="session-list"></ul>
+      <p class="empty-note" id="history-empty">No focus sessions in this range yet — start the timer!</p>
+    </section>
+
+    <section id="section-analytics" class="panel">
+      <h1>Analytics — last 7 days</h1>
+      <div class="chart" id="weekly-chart"></div>
+      <div class="stat-grid">
+        <div class="stat-card"><p class="stat-label">Total focus</p><p class="stat-value" id="week-total">0 min</p></div>
+        <div class="stat-card"><p class="stat-label">Completed sessions</p><p class="stat-value" id="week-completed">0</p></div>
+        <div class="stat-card"><p class="stat-label">Daily average</p><p class="stat-value" id="week-avg">0 min</p></div>
+        <div class="stat-card"><p class="stat-label">Most productive</p><p class="stat-value" id="week-best">—</p></div>
+      </div>
+    </section>
+
+    <section id="section-journal" class="panel">
+      <h1>Focus Journal</h1>
+      <form id="journal-form" class="stack-form">
+        <input type="text" id="journal-title" placeholder="Title" maxlength="150" required>
+        <textarea id="journal-notes" placeholder="Notes from today's focus..." rows="3"></textarea>
+        <button type="submit" class="btn btn-primary">Add entry</button>
+      </form>
+      <input type="search" id="journal-search" class="search-input" placeholder="Search title, notes or date...">
+      <ul id="journal-list" class="journal-list"></ul>
+      <p class="empty-note" id="journal-empty">No journal entries yet.</p>
+    </section>
+
+    <section id="section-profile" class="panel">
+      <h1>Profile</h1>
+      <div class="stat-grid" id="profile-stats"></div>
+      <h2>Achievements</h2>
+      <div id="achievement-grid" class="achievement-grid"></div>
+      <h2>Activity — last 26 weeks</h2>
+      <div id="heatmap" class="heatmap"></div>
+      <h2>Account</h2>
+      <form id="account-form" class="stack-form">
+        <label class="labeled">Full name<input type="text" id="account-name" maxlength="100" autocomplete="name" required></label>
+        <label class="labeled">Email<input type="email" id="account-email" maxlength="150" autocomplete="email" required></label>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+        <p class="hint" id="account-hint">&nbsp;</p>
+      </form>
+      <form id="password-form" class="stack-form">
+        <label class="labeled">Current password<input type="password" id="current-password" autocomplete="current-password" required></label>
+        <label class="labeled">New password<input type="password" id="new-password" minlength="8" autocomplete="new-password" required></label>
+        <button type="submit" class="btn btn-secondary">Change password</button>
+        <p class="hint" id="password-hint">&nbsp;</p>
+      </form>
+    </section>
+  </main>
+
+  <script src="js/dashboard.js"></script>
+</body>
+</html>
