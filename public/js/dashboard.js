@@ -982,6 +982,28 @@ async function logout() {
 
 document.getElementById('logout-btn').addEventListener('click', logout);
 
+const themeToggle = document.getElementById('theme-toggle');
+if (themeToggle) {
+  const THEME_ICON = { light: '☀', dark: '☾' };
+  const THEME_LABEL = { light: 'Light theme', dark: 'Dark theme' };
+  function syncThemeIcon() {
+    const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    const target = current === 'dark' ? 'light' : 'dark';
+    const icon = themeToggle.querySelector('.theme-icon') || themeToggle;
+    icon.textContent = THEME_ICON[target];
+    const label = themeToggle.querySelector('.theme-label');
+    if (label) label.textContent = THEME_LABEL[target];
+    themeToggle.setAttribute('aria-label', 'Switch to ' + target + ' theme');
+  }
+  syncThemeIcon();
+  themeToggle.addEventListener('click', () => {
+    const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('fg-theme', next);
+    syncThemeIcon();
+  });
+}
+
 let refreshInFlight = false;
 
 async function refreshData() {

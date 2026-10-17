@@ -4,6 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FocusGuard | Dashboard</title>
+  <script>
+    (function () {
+      var t = localStorage.getItem('fg-theme');
+      if (t !== 'light' && t !== 'dark') {
+        t = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
   <link rel="stylesheet" href="css/dashboard.css">
 </head>
 <body>
@@ -22,10 +31,13 @@
       <button class="tab" data-section="journal"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5"/></svg></span>Journal</button>
       <button class="tab" data-section="profile"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span>Profile</button>
     </div>
+    <div class="theme-row">
+      <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch theme" title="Toggle light / dark"><span class="theme-icon" aria-hidden="true">&#9790;</span><span class="theme-label">Dark theme</span></button>
+    </div>
     <div class="topbar-user">
       <span class="avatar-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></span>
       <span class="profile-copy"><small>SIGNED IN AS</small><span id="nav-name"></span></span>
-      <button id="logout-btn" class="btn-ghost"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17l5-5-5-5M15 12H3"/><path d="M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6"/></svg>Log out</button>
+      <button id="logout-btn" class="btn-ghost" type="button" aria-label="Log out"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17l5-5-5-5M15 12H3"/><path d="M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6"/></svg></button>
     </div>
   </nav>
 
