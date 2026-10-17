@@ -33,6 +33,30 @@
         <div class="stat-card"><p class="stat-label">Tasks completed</p><p class="stat-value" id="stat-tasks">0</p></div>
         <div class="stat-card"><p class="stat-label">Day streak</p><p class="stat-value" id="stat-streak">0</p></div>
       </div>
+      <div class="intention-card">
+        <p class="stat-label">Daily Intention</p>
+        <form id="intention-form" class="intention-form">
+          <label class="sr-only" for="intention-mode">How would you like to set your intention?</label>
+          <select id="intention-mode" class="intention-mode-select">
+            <option value="task">Choose a task</option>
+            <option value="custom">Write a personal goal</option>
+          </select>
+          <p id="intention-mode-help" class="intention-mode-help" aria-live="polite">Track your progress automatically when you complete this task.</p>
+          <label class="sr-only" for="intention-task">Choose a task for your daily intention</label>
+          <select id="intention-task" class="intention-task-select" required>
+            <option value="">Select a task</option>
+          </select>
+          <label class="sr-only" for="intention-text">Your main intention for today</label>
+          <textarea id="intention-text" maxlength="500" rows="3" placeholder="What is the one thing you want to focus on today?" required hidden></textarea>
+          <div class="intention-actions">
+            <p class="hint" id="intention-hint" role="status" aria-live="polite">Loading today's intention…</p>
+            <button type="submit" class="btn btn-primary" id="intention-submit" disabled>Add goal</button>
+          </div>
+        </form>
+        <p class="intention-progress" id="intention-progress" aria-live="polite">0 of 0 goals completed</p>
+        <ul class="intention-list" id="intention-list" aria-label="Today's goals"></ul>
+        <p class="empty-note" id="intentions-empty">No goals for today yet.</p>
+      </div>
       <div class="next-task-card">
         <p class="stat-label">Up next</p>
         <p id="next-task-title" class="next-task-title">No pending tasks — add one in the Tasks tab.</p>
