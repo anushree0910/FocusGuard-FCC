@@ -143,6 +143,7 @@ const intentionTaskSelect = document.getElementById('intention-task');
 const intentionSubmit = document.getElementById('intention-submit');
 const intentionHint = document.getElementById('intention-hint');
 const intentionProgress = document.getElementById('intention-progress');
+const intentionProgressFill = document.getElementById('intention-progress-fill');
 const intentionList = document.getElementById('intention-list');
 const intentionsEmpty = document.getElementById('intentions-empty');
 let intentionDirty = false;
@@ -255,6 +256,8 @@ function renderGoals() {
 
   intentionProgress.textContent = completed + ' of ' + currentGoals.length +
     (currentGoals.length === 1 ? ' goal completed' : ' goals completed');
+  const progressPercent = currentGoals.length ? (completed / currentGoals.length) * 100 : 0;
+  intentionProgressFill.style.width = progressPercent + '%';
   intentionsEmpty.classList.toggle('visible', currentGoals.length === 0);
 }
 

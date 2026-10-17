@@ -8,33 +8,46 @@
 </head>
 <body>
   <nav class="topbar">
-    <span class="topbar-brand"><span class="brand-mark">&#9673;</span> FocusGuard</span>
+    <a class="topbar-brand" href="dashboard.html" aria-label="FocusGuard dashboard">
+      <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg></span>
+      <span class="brand-copy"><strong>FocusGuard</strong><small>FOCUS WITH INTENTION</small></span>
+    </a>
+    <p class="nav-caption">YOUR WORKSPACE</p>
     <div class="topbar-tabs">
-      <button class="tab active" data-section="overview">Dashboard</button>
-      <button class="tab" data-section="timer">Focus Timer</button>
-      <button class="tab" data-section="tasks">Tasks</button>
-      <button class="tab" data-section="history">History</button>
-      <button class="tab" data-section="analytics">Analytics</button>
-      <button class="tab" data-section="journal">Journal</button>
-      <button class="tab" data-section="profile">Profile</button>
+      <button class="tab active" data-section="overview"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="5" rx="2"/><rect x="13" y="10" width="8" height="11" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/></svg></span>Dashboard</button>
+      <button class="tab" data-section="timer"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6M12 2v3"/></svg></span>Focus Timer</button>
+      <button class="tab" data-section="tasks"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg></span>Tasks</button>
+      <button class="tab" data-section="history"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg></span>History</button>
+      <button class="tab" data-section="analytics"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h17"/><rect x="7" y="11" width="3" height="5" rx="1"/><rect x="13" y="7" width="3" height="9" rx="1"/><rect x="19" y="4" width="3" height="12" rx="1"/></svg></span>Analytics</button>
+      <button class="tab" data-section="journal"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5"/></svg></span>Journal</button>
+      <button class="tab" data-section="profile"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span>Profile</button>
     </div>
     <div class="topbar-user">
-      <span id="nav-name"></span>
-      <button id="logout-btn" class="btn-ghost">Log out</button>
+      <span class="avatar-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></span>
+      <span class="profile-copy"><small>SIGNED IN AS</small><span id="nav-name"></span></span>
+      <button id="logout-btn" class="btn-ghost"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17l5-5-5-5M15 12H3"/><path d="M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6"/></svg>Log out</button>
     </div>
   </nav>
 
   <main>
     <section id="section-overview" class="panel active">
-      <h1>Good to see you, <span id="overview-name"></span></h1>
-      <div class="stat-grid">
-        <div class="stat-card"><p class="stat-label">Focus time today</p><p class="stat-value" id="stat-focus">00:00:00</p></div>
-        <div class="stat-card"><p class="stat-label">Sessions today</p><p class="stat-value" id="stat-sessions">0</p></div>
-        <div class="stat-card"><p class="stat-label">Tasks completed</p><p class="stat-value" id="stat-tasks">0</p></div>
-        <div class="stat-card"><p class="stat-label">Day streak</p><p class="stat-value" id="stat-streak">0</p></div>
-      </div>
-      <div class="intention-card">
-        <p class="stat-label">Daily Intention</p>
+      <header class="welcome-banner">
+        <div class="welcome-copy">
+          <p class="eyebrow">YOUR FOCUS SPACE</p>
+          <h1>Good to see you, <span id="overview-name"></span></h1>
+          <p class="welcome-subtitle">Take a breath, choose what matters, and make steady progress.</p>
+        </div>
+        <div class="welcome-art" aria-hidden="true"><span class="art-orbit orbit-one"></span><span class="art-orbit orbit-two"></span><span class="art-spark">&#10022;</span></div>
+      </header>
+
+      <div class="overview-grid">
+        <div class="overview-primary">
+          <section class="intention-card" aria-labelledby="intention-heading">
+        <div class="card-heading intention-heading">
+          <span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3a7 7 0 0 0-4 12.7c.6.4 1 1.1 1 1.8h6c0-.7.4-1.4 1-1.8A7 7 0 0 0 12 3Z"/><path d="M9 21h6M10 18h4M12 7v4m-2-2h4"/></svg></span>
+          <div><p class="eyebrow">START WITH WHAT MATTERS</p><h2 id="intention-heading">Daily Intention</h2><p class="card-supporting">A small promise to yourself for today.</p></div>
+          <span class="card-kicker">TODAY</span>
+        </div>
         <form id="intention-form" class="intention-form">
           <label class="sr-only" for="intention-mode">How would you like to set your intention?</label>
           <select id="intention-mode" class="intention-mode-select">
@@ -53,19 +66,34 @@
             <button type="submit" class="btn btn-primary" id="intention-submit" disabled>Add goal</button>
           </div>
         </form>
-        <p class="intention-progress" id="intention-progress" aria-live="polite">0 of 0 goals completed</p>
+        <div class="progress-heading"><p class="stat-label">TODAY'S PROGRESS</p><p class="intention-progress" id="intention-progress" aria-live="polite">0 of 0 goals completed</p></div>
+        <div class="progress-track" aria-hidden="true"><span id="intention-progress-fill"></span></div>
         <ul class="intention-list" id="intention-list" aria-label="Today's goals"></ul>
         <p class="empty-note" id="intentions-empty">No goals for today yet.</p>
-      </div>
-      <div class="next-task-card">
-        <p class="stat-label">Up next</p>
+          </section>
+          <section class="next-task-card" aria-labelledby="next-task-heading">
+        <div class="compact-card-heading"><span class="small-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h10M4 17h7"/><path d="m17 15 3 3 3-3"/></svg></span><div><p class="eyebrow">KEEP YOUR MOMENTUM</p><p class="stat-label" id="next-task-heading">Up next</p></div></div>
         <p id="next-task-title" class="next-task-title">No pending tasks — add one in the Tasks tab.</p>
         <p id="next-task-meta" class="hint"></p>
+          </section>
+        </div>
+        <aside class="overview-secondary" aria-label="Today's summary">
+          <div class="summary-heading"><p class="eyebrow">A QUICK LOOK</p><h2>Your day</h2><p class="card-supporting">Progress, one session at a time.</p></div>
+          <div class="stat-grid overview-stat-grid">
+            <div class="stat-card stat-focus"><span class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><p class="stat-label">Focus time</p><p class="stat-value" id="stat-focus">00:00:00</p><p class="stat-caption">today</p></div>
+            <div class="stat-card stat-sessions"><span class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v4M5.6 5.6l2.8 2.8M3 12h4m9 0h5M12 17v4M18.4 5.6l-2.8 2.8"/><circle cx="12" cy="12" r="5"/></svg></span><p class="stat-label">Sessions</p><p class="stat-value" id="stat-sessions">0</p><p class="stat-caption">today</p></div>
+            <div class="stat-card stat-tasks"><span class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg></span><p class="stat-label">Tasks done</p><p class="stat-value" id="stat-tasks">0</p><p class="stat-caption">so far</p></div>
+            <div class="stat-card stat-streak"><span class="stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 22c4 0 7-3 7-7 0-3-2-5-4-7 0 2-1 3-2 4 0-4-2-7-5-9 1 5-3 7-3 12 0 4 3 7 7 7Z"/><path d="M12 22c-2 0-3-1-3-3 0-2 1-3 3-5 0 2 3 3 3 5 0 2-1 3-3 3Z"/></svg></span><p class="stat-label">Day streak</p><p class="stat-value" id="stat-streak">0</p><p class="stat-caption">days</p></div>
+          </div>
+          <div class="aside-note"><span class="note-mark" aria-hidden="true">&#10023;</span><p>Focus grows through small, intentional moments.</p></div>
+        </aside>
       </div>
     </section>
 
     <section id="section-timer" class="panel">
-      <h1>Focus Timer</h1>
+      <header class="section-heading"><p class="eyebrow">MAKE SPACE FOR DEEP WORK</p><h1>Focus Timer</h1><p>Set a pace that works for you and settle into one focused session.</p></header>
+      <div class="timer-card">
+      <div class="timer-card-label"><span class="feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6M12 2v3"/></svg></span><span>FOCUS SESSION</span></div>
       <div class="timer-wrap">
         <svg class="timer-ring" viewBox="0 0 200 200" aria-hidden="true">
           <circle class="ring-bg" cx="100" cy="100" r="88"></circle>
@@ -83,10 +111,14 @@
         <button id="timer-pause" class="btn btn-secondary" disabled>Pause</button>
         <button id="timer-stop" class="btn btn-secondary" disabled>Stop &amp; Reset</button>
       </div>
+      <p class="timer-footnote">A quiet space for your next small win.</p>
+      </div>
     </section>
 
     <section id="section-tasks" class="panel">
-      <h1>Tasks</h1>
+      <header class="section-heading"><p class="eyebrow">CLEAR THE PATH</p><h1>Tasks</h1><p>Keep your next steps visible, organized, and manageable.</p></header>
+      <div class="tasks-board">
+      <div class="task-form-heading"><div><h2>Add a task</h2><p class="card-supporting">Capture it now and make room to focus.</p></div><span class="small-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></div>
       <form id="task-form" class="row-form">
         <input type="text" id="task-title" placeholder="What needs doing?" maxlength="255" required>
         <select id="task-priority">
@@ -113,6 +145,7 @@
       </div>
       <ul id="task-list" class="task-list"></ul>
       <p class="empty-note" id="tasks-empty">No tasks here yet.</p>
+      </div>
     </section>
 
     <section id="section-history" class="panel">
