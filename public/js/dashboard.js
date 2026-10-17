@@ -133,6 +133,297 @@ async function loadOverview() {
   }
 }
 
+/* ---------- daily intention ---------- */
+
+const intentionForm = document.getElementById('intention-form');
+const intentionText = document.getElementById('intention-text');
+const intentionModeSelect = document.getElementById('intention-mode');
+const intentionModeHelp = document.getElementById('intention-mode-help');
+const intentionTaskSelect = document.getElementById('intention-task');
+const intentionSubmit = document.getElementById('intention-submit');
+const intentionHint = document.getElementById('intention-hint');
+const intentionProgress = document.getElementById('intention-progress');
+const intentionList = document.getElementById('intention-list');
+const intentionsEmpty = document.getElementById('intentions-empty');
+let intentionDirty = false;
+let availableIntentionTasks = new Map();
+let currentGoals = [];
+let loadedIntentionDate = null;
+let activeGoalEdit = null;
+
+function markIntentionDirty() {
+  intentionDirty = true;
+  intentionHint.textContent = 'You have unsaved changes.';
+  intentionHint.className = 'hint';
+}
+
+function updateIntentionInputMode() {
+  const usesTask = intentionModeSelect.value === 'task';
+  intentionText.hidden = usesTask;
+  intentionText.required = !usesTask;
+  intentionTaskSelect.hidden = !usesTask;
+  intentionTaskSelect.required = usesTask;
+  intentionModeHelp.textContent = usesTask
+    ? 'Track your progress automatically when you complete this task.'
+    : "Set a daily goal that isn't tied to a single task.";
+}
+
+function goalIsAchieved(goal) {
+  if (goal.task_id) return Boolean(goal.task && goal.task.status === 'Completed');
+  return Boolean(goal.achieved);
+}
+
+function showIntentionMessage(message, state = '') {
+  intentionHint.textContent = message;
+  intentionHint.className = 'hint' + (state ? ' ' + state : '');
+}
+
+function replaceGoal(updatedGoal) {
+  currentGoals = currentGoals.map((goal) =>
+    goal.goal_id === updatedGoal.goal_id ? updatedGoal : goal
+  );
+  renderGoals();
+}
+
+function renderGoals() {
+  intentionList.replaceChildren();
+  if (activeGoalEdit && !currentGoals.some((goal) => goal.goal_id === activeGoalEdit.goalId)) {
+    activeGoalEdit = null;
+  }
+  let completed = 0;
+
+  currentGoals.forEach((goal) => {
+    const achieved = goalIsAchieved(goal);
+    if (achieved) completed += 1;
+
+    const item = document.createElement('li');
+    item.className = 'intention-item' + (achieved ? ' achieved' : '');
+    if (activeGoalEdit && activeGoalEdit.goalId === goal.goal_id) {
+      item.appendChild(createGoalEditForm(goal, activeGoalEdit.text));
+      intentionList.appendChild(item);
+      return;
+    }
+
+    const check = document.createElement('input');
+    check.type = 'checkbox';
+    check.className = 'intention-goal-check';
+    check.checked = achieved;
+    check.disabled = Boolean(goal.task_id);
+    check.setAttribute('aria-label',
+      goal.task_id
+        ? 'Task completion status for ' + goal.text
+        : 'Mark ' + goal.text + ' as achieved'
+    );
+    if (!goal.task_id) {
+      check.addEventListener('change', () => updateGoalAchievement(goal, check));
+    }
+
+    const details = document.createElement('div');
+    details.className = 'intention-goal-details';
+    const text = document.createElement('p');
+    text.className = 'intention-goal-text';
+    text.textContent = goal.text;
+    details.appendChild(text);
+    if (goal.task_id && goal.task) {
+      const taskRef = document.createElement('p');
+      taskRef.className = 'intention-goal-task';
+      taskRef.textContent = 'Task: ' + goal.task.title;
+      details.appendChild(taskRef);
+    }
+
+    const status = document.createElement('span');
+    status.className = 'intention-goal-status ' + (achieved ? 'achieved' : 'progress');
+    if (goal.task_id && !goal.task) {
+      status.className = 'intention-goal-status unavailable';
+      status.textContent = 'In progress · task unavailable';
+    } else if (goal.task_id) {
+      status.textContent = achieved ? 'Achieved' : 'Task in progress';
+    } else {
+      status.textContent = achieved ? 'Achieved' : 'In progress';
+    }
+
+    const edit = document.createElement('button');
+    edit.type = 'button';
+    edit.className = 'icon-btn';
+    edit.textContent = 'Edit';
+    edit.setAttribute('aria-label', 'Edit goal: ' + goal.text);
+    edit.addEventListener('click', () => editGoal(goal));
+
+    item.append(check, details, status, edit);
+    intentionList.appendChild(item);
+  });
+
+  intentionProgress.textContent = completed + ' of ' + currentGoals.length +
+    (currentGoals.length === 1 ? ' goal completed' : ' goals completed');
+  intentionsEmpty.classList.toggle('visible', currentGoals.length === 0);
+}
+
+async function updateGoalAchievement(goal, checkbox) {
+  const achieved = checkbox.checked;
+  checkbox.disabled = true;
+  try {
+    const data = await api('/api/intentions/' + encodeURIComponent(goal.goal_id) + '/achievement', {
+      method: 'PUT',
+      body: JSON.stringify({ achieved }),
+    });
+    replaceGoal(data.goal);
+    showIntentionMessage(achieved ? 'Goal marked as achieved.' : 'Goal marked as in progress.', achieved ? 'ok' : '');
+  } catch (err) {
+    checkbox.checked = !achieved;
+    checkbox.disabled = false;
+    showIntentionMessage(err.message, 'error');
+  }
+}
+
+function createGoalEditForm(goal, initialText) {
+  const form = document.createElement('form');
+  form.className = 'intention-edit-form';
+  const input = document.createElement('textarea');
+  input.className = 'intention-edit-input';
+  input.value = initialText;
+  input.maxLength = 500;
+  input.rows = 2;
+  input.required = true;
+  input.setAttribute('aria-label', 'Edit goal text');
+  input.addEventListener('input', () => {
+    if (activeGoalEdit && activeGoalEdit.goalId === goal.goal_id) activeGoalEdit.text = input.value;
+  });
+
+  const actions = document.createElement('div');
+  actions.className = 'intention-edit-actions';
+  const save = document.createElement('button');
+  save.type = 'submit';
+  save.className = 'btn btn-primary';
+  save.textContent = 'Save';
+  const cancel = document.createElement('button');
+  cancel.type = 'button';
+  cancel.className = 'btn btn-secondary';
+  cancel.textContent = 'Cancel';
+  cancel.addEventListener('click', () => {
+    activeGoalEdit = null;
+    renderGoals();
+  });
+
+  actions.append(save, cancel);
+  form.append(input, actions);
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const text = input.value.trim();
+    if (!text) {
+      showIntentionMessage('Enter a goal before saving.', 'error');
+      input.focus();
+      return;
+    }
+    save.disabled = true;
+    showIntentionMessage('Saving goal…');
+    try {
+      const data = await api('/api/intentions/' + encodeURIComponent(goal.goal_id), {
+        method: 'PUT',
+        body: JSON.stringify({ text }),
+      });
+      activeGoalEdit = null;
+      replaceGoal(data.goal);
+      showIntentionMessage('Goal updated.', 'ok');
+    } catch (err) {
+      save.disabled = false;
+      showIntentionMessage(err.message, 'error');
+    }
+  });
+  return form;
+}
+
+function editGoal(goal) {
+  activeGoalEdit = { goalId: goal.goal_id, text: goal.text };
+  renderGoals();
+  const input = intentionList.querySelector('.intention-edit-input');
+  if (input) input.focus();
+}
+
+intentionText.addEventListener('input', markIntentionDirty);
+intentionModeSelect.addEventListener('change', () => {
+  markIntentionDirty();
+  updateIntentionInputMode();
+});
+intentionTaskSelect.addEventListener('change', markIntentionDirty);
+
+async function loadIntention() {
+  intentionSubmit.disabled = true;
+  showIntentionMessage("Loading today's goals…");
+  try {
+    const [data, taskData] = await Promise.all([
+      api('/api/intentions/today'),
+      api('/api/tasks?filter=all'),
+    ]);
+    if (loadedIntentionDate !== null && loadedIntentionDate !== data.date) {
+      intentionDirty = false;
+      activeGoalEdit = null;
+      intentionText.value = '';
+      intentionTaskSelect.value = '';
+    }
+    loadedIntentionDate = data.date;
+    const selectedTaskId = intentionTaskSelect.value;
+    availableIntentionTasks = new Map(taskData.tasks.map((task) => [task.task_id, task]));
+    intentionTaskSelect.replaceChildren(new Option('Select a task', ''));
+    taskData.tasks.forEach((task) => {
+      const label = (task.status === 'Completed' ? '✓ ' : '') + task.title;
+      intentionTaskSelect.add(new Option(label, task.task_id));
+    });
+    if (selectedTaskId && !availableIntentionTasks.has(selectedTaskId)) {
+      intentionTaskSelect.add(new Option('Unavailable linked task', selectedTaskId, true, true));
+    }
+    intentionTaskSelect.value = selectedTaskId;
+    updateIntentionInputMode();
+    currentGoals = data.goals;
+    renderGoals();
+    showIntentionMessage(intentionDirty ? 'You have unsaved changes.' : "Today's goals are up to date.");
+    intentionSubmit.disabled = false;
+  } catch (err) {
+    showIntentionMessage(err.message, 'error');
+    intentionSubmit.disabled = false;
+  }
+}
+
+intentionForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const taskId = intentionModeSelect.value === 'task' ? intentionTaskSelect.value : '';
+  const text = intentionText.value.trim();
+  if (intentionModeSelect.value === 'task' && !taskId) {
+    intentionHint.textContent = 'Choose a task before saving.';
+    intentionHint.className = 'hint error';
+    intentionTaskSelect.focus();
+    return;
+  }
+  if (taskId && !availableIntentionTasks.has(taskId)) {
+    intentionHint.textContent = 'That task is no longer available. Choose another task or a custom intention.';
+    intentionHint.className = 'hint error';
+    return;
+  }
+  if (!taskId && !text) {
+    intentionHint.textContent = 'Enter an intention before saving.';
+    intentionHint.className = 'hint error';
+    intentionText.focus();
+    return;
+  }
+  intentionSubmit.disabled = true;
+  showIntentionMessage('Adding goal…');
+  try {
+    const data = await api('/api/intentions/today', {
+      method: 'POST',
+      body: JSON.stringify(taskId ? { taskId } : { text }),
+    });
+    currentGoals.push(data.goal);
+    renderGoals();
+    intentionText.value = '';
+    intentionDirty = false;
+    loadedIntentionDate = data.goal.date;
+    showIntentionMessage('Goal added.', 'ok');
+  } catch (err) {
+    showIntentionMessage(err.message, 'error');
+  } finally {
+    intentionSubmit.disabled = false;
+  }
+});
+
 /* ---------- timer ---------- */
 
 const RING_LENGTH = 552.9;
@@ -694,7 +985,7 @@ async function refreshData() {
   if (refreshInFlight) return;
   refreshInFlight = true;
   try {
-    await Promise.all([loadOverview(), loadTasks(), loadHistory(), loadAnalytics(), loadJournal(), loadProfile()]);
+    await Promise.all([loadOverview(), loadIntention(), loadTasks(), loadHistory(), loadAnalytics(), loadJournal(), loadProfile()]);
   } finally {
     refreshInFlight = false;
   }
@@ -716,7 +1007,7 @@ async function init() {
   } catch (err) {
     return;
   }
-  await Promise.all([loadOverview(), loadTasks(), loadHistory(), loadAnalytics(), loadJournal(), loadProfile()]);
+  await Promise.all([loadOverview(), loadIntention(), loadTasks(), loadHistory(), loadAnalytics(), loadJournal(), loadProfile()]);
 }
 
 init();

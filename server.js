@@ -2,6 +2,7 @@ const path = require('path');
 const express = require('express');
 const session = require('express-session');
 const { connect } = require('./models/db');
+const intentions = require('./models/intentionModel');
 const requireAuth = require('./middleware/auth');
 
 const authRoutes = require('./routes/auth');
@@ -11,6 +12,7 @@ const journalRoutes = require('./routes/journal');
 const exportRoutes = require('./routes/export');
 const profileRoutes = require('./routes/profile');
 const analyticsRoutes = require('./routes/analytics');
+const intentionRoutes = require('./routes/intentions');
 
 const app = express();
 
@@ -32,6 +34,7 @@ app.use('/api/journal', requireAuth, journalRoutes);
 app.use('/api/export', requireAuth, exportRoutes);
 app.use('/api/profile', requireAuth, profileRoutes);
 app.use('/api/analytics', requireAuth, analyticsRoutes);
+app.use('/api/intentions', requireAuth, intentionRoutes);
 
 app.use('/api', (req, res) => res.status(404).json({ error: 'Not found.' }));
 
@@ -43,14 +46,15 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 3000;
 
 connect()
+  .then(() => intentions.initialize())
   .then(() => {
     app.listen(PORT, () => {
       console.log(`FocusGuard running at http://localhost:${PORT}`);
     });
   })
   .catch((err) => {
-    console.error('Could not connect to MongoDB at mongodb://127.0.0.1:27017/focusguard_web');
+    console.error('Could not connect to MongoDB or initialize the Daily Intention index.');
     console.error(err.message);
-    console.error('Start MongoDB locally, then run npm start again.');
+    console.error('Check MongoDB availability and the Daily Intention index, then run npm start again.');
     process.exit(1);
   });
